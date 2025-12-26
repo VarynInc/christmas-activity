@@ -56,6 +56,9 @@ function loadAssets() {
     loader = new createjs.LoadQueue(false);
     loader.addEventListener("complete", handleLoadComplete);
     loader.loadManifest([
+        { src: "mountains.png", id: "mountains.png" },
+        { src: "tree.png", id: "tree.png" },
+        { src: "horse.png", id: "horse.png" },
         { src: "snowflake-sprites.png", id: "game-sprites" },
         { src: "snowflake-sprites.json", id: "game-spriteframes" }
     ],
@@ -97,15 +100,15 @@ function createSnowflake(numberOfSpriteFrames) {
         const rotation = (Math.random() * 360) - 180;
         const lifeTime = 15000 + (Math.floor(Math.random() * 5000));
         createjs.Tween.get(sprite, { loop: -1 })
-            .wait(Math.floor(Math.random() * 1500))
-            .to({ y: finalY }, lifeTime)
-            .call(function(tween) {
-                stage.removeChild(tween.target);
-            });
+        .wait(Math.floor(Math.random() * 1500))
+        .to({ y: finalY }, lifeTime)
+        .call(function(tween) {
+            stage.removeChild(tween.target);
+        });
         createjs.Tween.get(sprite, { loop: 4, bounce: true })
-            .to({ x: finalX }, Math.floor(lifeTime / 4));
+        .to({ x: finalX }, Math.floor(lifeTime / 4));
         createjs.Tween.get(sprite, { loop: 10, bounce: true })
-            .to({ rotation: rotation }, Math.floor(lifeTime / 10), createjs.Ease.getElasticInOut(1, 5));
+        .to({ rotation: rotation }, Math.floor(lifeTime / 10), createjs.Ease.getElasticInOut(1, 5));
     }
 }
 
@@ -114,8 +117,8 @@ function createBackground() {
         stage.removeAllChildren();
     }
     const graphics = new createjs.Graphics()
-        .beginLinearGradientFill(["#000034", "#00007f"], [0, 1], 0, 0, 0, stageHeight)
-        .drawRect(0, 0, stageWidth, stageHeight);
+    .beginLinearGradientFill(["#000034", "#00007f"], [0, 1], 0, 0, 0, stageHeight)
+    .drawRect(0, 0, stageWidth, stageHeight);
     backgroundShape = new createjs.Shape(graphics);
     backgroundShape.cache(0, 0, stageWidth, stageHeight);
     stage.addChildAt(backgroundShape, 0);
@@ -139,11 +142,29 @@ function createBackground() {
     stage.addChild(image);
 }
 
+function createSki() {
+    const image = new createjs.Bitmap("horse.png");
+    const imageSize = image.getBounds();
+    // scale to fit based on screen height
+    const scale = ((stageHeight * 0.2) / imageSize.height) * 1.5;
+    image.x = 50; // 0 - imageSize.width * scale;
+    image.y = stageHeight * 0.5;
+    image.scaleX = 0.01;
+    image.scaleY = 0.01;
+    stage.addChild(image);
+
+    createjs.Tween.get(image, {loop: -1})
+    .wait(2000)
+    .to({ x: stageWidth * 0.65, y: stageHeight, scaleX: scale, scaleY: scale }, 6000)
+    .to({ scaleX: 0.01, scaleY: 0.01}, 1000);
+}
+
 /**
  * After all game assets are loaded control comes here to initialize the game.
  */
 function handleLoadComplete() {
     createBackground();
+    createSki();
     createSprites();
     createjs.Ticker.addEventListener("tick", onEnterFrame);
     stage.update();
