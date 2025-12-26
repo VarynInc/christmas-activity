@@ -56,9 +56,9 @@ function loadAssets() {
     loader = new createjs.LoadQueue(false);
     loader.addEventListener("complete", handleLoadComplete);
     loader.loadManifest([
-        { src: "mountains.png", id: "mountains.png" },
-        { src: "tree.png", id: "tree.png" },
-        { src: "horse.png", id: "horse.png" },
+        { src: "mountains.png", id: "mountains" },
+        { src: "tree.png", id: "tree" },
+        { src: "horse.png", id: "horse" },
         { src: "snowflake-sprites.png", id: "game-sprites" },
         { src: "snowflake-sprites.json", id: "game-spriteframes" }
     ],
@@ -122,7 +122,7 @@ function createBackground() {
     backgroundShape = new createjs.Shape(graphics);
     backgroundShape.cache(0, 0, stageWidth, stageHeight);
     stage.addChildAt(backgroundShape, 0);
-    let image = new createjs.Bitmap("mountains.png");
+    let image = new createjs.Bitmap(loader.getResult("mountains"));
     // scale so it fits full width
     let imageSize = image.getBounds();
     let scale = stageWidth / imageSize.width;
@@ -131,7 +131,7 @@ function createBackground() {
     image.x = 0;
     image.y = stageHeight - (imageSize.height * scale);
     stage.addChild(image);
-    image = new createjs.Bitmap("tree.png");
+    image = new createjs.Bitmap(loader.getResult("tree"));
     // scale to fit 50% center
     imageSize = image.getBounds();
     scale = (stageHeight * 0.75) / imageSize.height;
@@ -143,7 +143,7 @@ function createBackground() {
 }
 
 function createSki() {
-    const image = new createjs.Bitmap("horse.png");
+    const image = new createjs.Bitmap(loader.getResult("horse"));
     const imageSize = image.getBounds();
     // scale to fit based on screen height
     const scale = ((stageHeight * 0.2) / imageSize.height) * 1.5;
